@@ -28,16 +28,16 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 module alu_pe #(parameter DWIDTH = 32)
-   (input logic Clk, Reset, ALU_En,Exec_En_Global, data_req_valid_i,
-    input logic signed [31:0]        load_data_i, alu_in_prev,    
-    input logic signed [DWIDTH-1:0]  ALU_In0,
-    input logic signed [DWIDTH-1:0]  ALU_In1,
-    input logic [4:0] 	       Opcode,
-    output logic signed [DWIDTH-1:0] ALU_Out,
-    output logic 	       ALU_Cond);
+   (input logic 						Clk, Reset, ALU_En,Exec_En_Global, data_req_valid_i,
+    input logic signed [31:0]        	load_data_i, alu_in_prev,    
+    input logic signed [DWIDTH-1:0]  	ALU_In0,
+    input logic signed [DWIDTH-1:0]  	ALU_In1,
+    input logic [5:0] 	       			Opcode,
+    output logic signed [DWIDTH-1:0] 	ALU_Out,
+    output logic 	       				ALU_Cond);
    
-   logic 		       data_valid;
-   logic [31:0] 	       alu_out_prev;
+   logic 		       					data_valid;
+   logic [31:0] 	       				alu_out_prev;
    
    always_ff @(posedge Clk or negedge Reset)
      begin
@@ -58,82 +58,82 @@ module alu_pe #(parameter DWIDTH = 32)
 	 ALU_Out <= alu_in_prev;
 	 ALU_Cond <= '0;
       end else if(ALU_En == 1'b1) begin
-	 if(Opcode == 5'b00111 && data_req_valid_i) begin
+	 if(Opcode == 6'b000111 && data_req_valid_i) begin // LOAD
 	    ALU_Out <= load_data_i;
 	    ALU_Cond <= 1'b0;
-	 end else if(Opcode == 5'b00001) begin
+	 end else if(Opcode == 6'b000001) begin
 	       ALU_Out <= ALU_In0 + ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00010) begin
+	    end else if(Opcode == 6'b000010) begin // S_ADD
 	       ALU_Out <= ALU_In0 + ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00011) begin
+	    end else if(Opcode == 6'b000011) begin
 	       ALU_Out <= ALU_In0 - ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00100) begin
+	    end else if(Opcode == 6'b000100) begin
 	       ALU_Out <= ALU_In0 * ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00101) begin
+	    end else if(Opcode == 6'b000101) begin
 	       ALU_Out <= ALU_In0 << ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00110) begin
+	    end else if(Opcode == 6'b000110) begin
 	       ALU_Out <= ALU_In0 >> ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b00111) begin
+	    end else if(Opcode == 6'b000111) begin
 	       ALU_Cond <= 0;
 	       ALU_Out <= alu_in_prev;			
-	    end else if(Opcode == 5'b01000) begin
+	    end else if(Opcode == 6'b001000) begin
 	       ALU_Cond <= 0;	
 	       ALU_Out <= alu_in_prev;	
-	    end else if(Opcode == 5'b01001) begin
+	    end else if(Opcode == 6'b001001) begin //STR
 	       ALU_Cond <= 1'b0;	
 	       ALU_Out <= ALU_In1;
-	    end else if(Opcode == 5'b01011) begin
+	    end else if(Opcode == 6'b001011) begin
 	       ALU_Out <= ALU_In0 & ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b01100) begin
+	    end else if(Opcode == 6'b001100) begin
 	       ALU_Out <= ALU_In0 | ALU_In1;
 	       ALU_Cond <= 0;	
 	       
-	    end else if(Opcode == 5'b01101) begin
+	    end else if(Opcode == 6'b001101) begin
 	       ALU_Out <= !ALU_In0;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b01110) begin
+	    end else if(Opcode == 6'b001110) begin
 	       ALU_Out <= ALU_In0 ^ ALU_In1;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b01111) begin
+	    end else if(Opcode == 6'b001111) begin // MOVE
 	       ALU_Out <= ALU_In0;
 	       ALU_Cond <= 1'b0;	
 	       
-	    end else if(Opcode == 5'b10000) begin
+	    end else if(Opcode == 6'b010000) begin
 	       ALU_Cond <= (ALU_In0 <= ALU_In1)?1'b1:1'b0;	
 	       ALU_Out <= '0;
-	    end else if(Opcode == 5'b10001) begin
+	    end else if(Opcode == 6'b010001) begin
 	       ALU_Cond <= (ALU_In0 >= ALU_In1)?1'b1:1'b0;	
 	       ALU_Out <= '0;
 	       
-	    end else if(Opcode == 5'b10100) begin
+	    end else if(Opcode == 6'b010100) begin
 	       ALU_Cond <= 1'b0;	
 	       ALU_Out <= alu_in_prev;
-	    end else if(Opcode == 5'b10101) begin
+	    end else if(Opcode == 6'b010101) begin
 	       ALU_Cond <= (ALU_In0 != ALU_In1)?1'b1:1'b0;	
 	       ALU_Out <= '0;
-	    end else if(Opcode == 5'b11100) begin
+	    end else if(Opcode == 6'b011100) begin
 	       ALU_Cond <= (ALU_In0 < ALU_In1)?1'b1:1'b0;	
 	       ALU_Out <= '0;
-	    end else if(Opcode == 5'b11101) begin
+	    end else if(Opcode == 6'b011101) begin
 	       ALU_Cond <= (ALU_In0 > ALU_In1)?1'b1:1'b0;	
 	       ALU_Out <= '0;
-	    end else if(Opcode == 5'b11000) begin
+	    end else if(Opcode == 6'b011000) begin
 	       ALU_Out <= '0;	
 	       ALU_Cond <= '0;
 	    end else begin

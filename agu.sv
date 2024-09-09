@@ -1,21 +1,22 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Company:        Multitherman Laboratory @ DEIS - University of Bologna     //
-//                    Viale Risorgimento 2 40136                              //
-//                    Bologna - fax 0512093785 -                              //
+// Company:        Lab-STICC @ Université Bretagne Sud					      //
+//                 27 rue Armand Guillemot BP 92116,56321                     //
+//                 LORIENT Cedex - Tél. 02 97 87 66 66 -                      //
 //                                                                            //
-// Engineer:       Satyajit Das - satyajit.das@unibo.it                       //
-//                                                                            //
+// Engineer:       Rohit Prasad - rohit.prasad@univ-ubs.fr                    //
+//																			  //
+//													                          //
 // Additional contributions by:                                               //
 //                                                                            //
 //                                                                            //
 //                                                                            //
-// Create Date:    17/05/2016                                                 // 
-// Design Name:    CGRA                                                       // 
-// Module Name:    orcond                                                     //
+// Create Date:    14/11/2018                                                 //
+// Design Name:    Address Generation Unit 		 	                          //
+// Module Name:    agu                                                        //
 // Project Name:                                                              //
 // Language:       SystemVerilog                                              //
 //                                                                            //
-// Description:    CGRA                                                       //
+// Description:    						 						  			  //
 //                                                                            //
 //                                                                            //
 // Revision:                                                                  //
@@ -26,26 +27,20 @@
 //                                                                            //
 //                                                                            //
 //                                                                            //
-///////////////////////////////////////////////////////////////////////////////
-module orcond #(parameter NB_ROWS = 3, parameter NB_COLS = 2)
-   (
-    input logic [(NB_ROWS*NB_COLS)-1:0] In_Cond,
-    output logic 			Out_Cond 
-    );
-   logic [NB_ROWS*NB_COLS:0] tmp;
-   assign tmp[0] = 0;
-   
-   genvar 		    i;
-   generate
-      for(i=0; i< NB_ROWS*NB_COLS; i++) begin
-        assign tmp[i+1] = tmp[i] | In_Cond[i];
-      end
-   endgenerate
-   always_comb begin
-      Out_Cond= tmp[NB_ROWS*NB_COLS];
-   end      
-endmodule // orcond
+//////////////////////////////////////////////////////////////////////////////// 
 
+module agu
+	( //INPUT
+		input logic [10:0] 	index_0, // i_START a[i][j]
+		input logic [10:0] 	index_1, // j_START a[i][j]		
+		input logic [19:0] 	base_adr, // base address
 
+	//OUTPUT
+		output logic [31:0]	address
+	);
 
-   
+	always_comb
+	begin
+		address = (((index_0 + index_1)<<2) + base_adr);
+	end
+endmodule // agu

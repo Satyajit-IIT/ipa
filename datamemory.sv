@@ -27,6 +27,8 @@
 //                                                                            //
 //                                                                            //
 ///////////////////////////////////////////////////////////////////////////////
+//module datamemory #(parameter NB_ROWS = 2, parameter NB_COLS = 4)
+//module datamemory #(parameter NB_ROWS = 3, parameter NB_COLS = 2)
 module datamemory #(parameter NB_ROWS = 4, parameter NB_COLS = 4)
 (
  input logic[(NB_COLS*NB_ROWS)-1 : 0] [31:0] Data_Addr_In,

@@ -7,11 +7,11 @@ module ipa_wrap
    parameter BE_WIDTH=4,
    parameter ADDR_WIDTH=32,
    parameter TEST_SET_BIT = 20,
-   parameter NB_ROWS = 4,
-   parameter NB_COLS = 4,
+   parameter NB_ROWS = 4,//3
+   parameter NB_COLS = 4,//2
    parameter IPA_GCM_ID_WIDTH = 20,
    parameter NB_GCM_BANKS = 2,
-   parameter NB_LS = 16 // top two rows
+   parameter NB_LS = 8 // top two rows
 )
 (
    input  logic               clk,
@@ -40,7 +40,7 @@ module ipa_wrap
    logic [NB_LS-1:0] [32-1:0] tcdm_wdata;
    logic [NB_LS-1:0] [32-1:0] tcdm_r_rdata;
    logic [NB_LS-1:0]          tcdm_r_valid;
-   logic 		      context_fetch_en;
+   logic 		      context_fetch_en;   
 
 
    logic [3:0][DATA_WIDTH-1:0]              s_dma_ipa_bus_wdata;
@@ -132,7 +132,7 @@ module ipa_wrap
       end
    end
    
-   
+  
    always_ff @(posedge clk or negedge rst_n) begin
      if(rst_n == '0) begin
 	context_fetch_en <= '0;
@@ -281,8 +281,8 @@ module ipa_wrap
    
    dma_ipa 
      #(
-       .NB_ROWS( 4), 
-       .NB_COLS( 4),
+       .NB_ROWS( NB_ROWS), //2
+       .NB_COLS( NB_COLS),
        .GCM_ADDR_WIDTH(ADDR_WIDTH)
        ) 
    ipa_controller_i(
@@ -301,17 +301,18 @@ module ipa_wrap
 	   .exec_comp(ipa_exec_complete),
 	   .busy_o(ipa_busy),
 	   .read_valid(s_dma_ipa_bus_r_valid[3])
+          
 	   );
    cgra 
-     #(
-       .NB_ROWS(4), 
-       .NB_COLS(4), 
-       .DATA_WIDTH(32), 
-       .NB_LS(16)
-       )
+   /*  #(
+       .NB_ROWS(NB_ROWS), 
+       .NB_COLS(NB_COLS), 
+       .DATA_WIDTH(DATA_WIDTH), 
+       .NB_LS(NB_LS)
+       )*/ //if parameters are passed from here, PE array with NB_COLS rows and NB_ROWS columns will be setup ; TODO: Invetsigate why
    ipa_cgra_i(
 	     .Clk(clk),
-	     .Reset(rst_n),
+	     .Reset(rst_n),	  
 	     .DMA_Read_En(DMA_Write_En_Out),
 	     .DMA_Addr_In(DMA_Addr_Out),
 	     .DMA_Data_In(DMA_Data_Out),
